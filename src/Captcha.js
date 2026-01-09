@@ -94,10 +94,10 @@ class Captcha extends EventEmitter {
         super();
 
         //check discord.js version
-        if (version.split(".")[0] < 14) return console.log(`Discord.js Captcha Error: Discord.js v14 or later is required.\nPlease check the README for finding a compatible version for Discord.js v${version.split(".")[0]}\nNeed help? Join our Discord server at 'https://discord.gg/P2g24jp'`);
+        if (version.split(".")[0] < 14) return console.error(`[ERROR] libanabelle-captcha: Discord.js v14 or later is required.\nPlease check the README for finding a compatible version for Discord.js v${version.split(".")[0]}`);
 
         if (!client) {
-            console.log(`Discord.js Captcha Error: No Discord Client was Provided!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: No Discord Client was Provided!`);
             process.exit(1)
         }
         this.client = client;
@@ -108,35 +108,35 @@ class Captcha extends EventEmitter {
         this.options = options;
 
         if ((options.sendToTextChannel === true) && (!options.channelID)) {
-            console.log(`Discord.js Captcha Error: Option "sendToTextChannel" was set to true, but "channelID" was not Provided!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "sendToTextChannel" was set to true, but "channelID" was not Provided!`);
             process.exit(1)
         }
         if ((options.addRoleOnSuccess === true) && (!options.roleID)) {
-            console.log(`Discord.js Captcha Error: Option "addRoleOnSuccess" was set to true, but "roleID" was not Provided!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "addRoleOnSuccess" was set to true, but "roleID" was not Provided!`);
             process.exit(1)
         }
         if (options.attempts < 1) {
-            console.log(`Discord.js Captcha Error: Option "attempts" must be Greater than 0!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "attempts" must be Greater than 0!`);
             process.exit(1)
         }
         if (options.timeout < 1) {
-            console.log(`Discord.js Captcha Error: Option "timeout" must be Greater than 0!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "timeout" must be Greater than 0!`);
             process.exit(1)
         }
         if (options.caseSensitive && (typeof options.caseSensitive !== "boolean")) {
-            console.log(`Discord.js Captcha Error: Option "caseSensitive" must be of type boolean!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "caseSensitive" must be of type boolean`);
             process.exit(1)
         }
         if (options.customPromptEmbed && (typeof options.customPromptEmbed === "string")) {
-            console.log(`Discord.js Captcha Error: Option "customPromptEmbed" is not an instance of EmbedBuilder!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "customPromptEmbed" is not an instance of EmbedBuilder.`);
             process.exit(1)
         }
         if (options.customSuccessEmbed && (typeof options.customSuccessEmbed === "string")) {
-            console.log(`Discord.js Captcha Error: Option "customSuccessEmbed" is not an instance of EmbedBuilder!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "customSuccessEmbed" is not an instance of EmbedBuilder!`);
             process.exit(1)
         }
         if (options.customFailureEmbed && (typeof options.customFailureEmbed === "string")) {
-            console.log(`Discord.js Captcha Error: Option "customFailureEmbed" is not an instance of EmbedBuilder!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            console.error(`[ERROR] libanabelle-captcha: Option "customFailureEmbed" is not an instance of EmbedBuilder`);
             process.exit(1)
         }
 
@@ -178,12 +178,12 @@ class Captcha extends EventEmitter {
     * });
     */
     async present(member, customCaptcha) {
-        if (!member) return console.log(`Discord.js Captcha Error: No Discord Member was Provided!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+        if (!member) return console.error(`[ERROR] libanabelle-captcha: No Discord Member provided'`);
         if (customCaptcha) {
-            if (!customCaptcha.image) return console.log(`Discord.js Captcha Error: Custom Captcha Image Data does not include an Image Buffer!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
-            if (!customCaptcha.text) return console.log(`Discord.js Captcha Error: Custom Captcha Image Data does not include a Text Answer!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
-            if (!Buffer.isBuffer(customCaptcha.image)) return console.log(`Discord.js Captcha Error: Custom Captcha Image is not a Buffer!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
-            if (typeof customCaptcha.text !== "string") return console.log(`Discord.js Captcha Error: Custom Captcha Text is not of type String!\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+            if (!customCaptcha.image) return console.error(`[ERROR] libanabelle-captcha: Custom captcha data doesn't contain an image buffer`);
+            if (!customCaptcha.text) return console.error(`[ERROR] libanabelle-captcha: Custom captcha data doesn't have a text answer`);
+            if (!Buffer.isBuffer(customCaptcha.image)) return console.error(`[ERROR] libanabelle-captcha: Custom Captcha Image is not a Buffer`);
+            if (typeof customCaptcha.text !== "string") return console.error(`[ERROR] libanabelle-captcha: Custom Captcha Text is not of type String`);
         }
         const user = member.user;
         const captcha = customCaptcha ? customCaptcha : await createCaptcha(6, this.options.caseSensitive ? "" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -244,7 +244,7 @@ class Captcha extends EventEmitter {
                         ]
                     })
                 } else {
-                    return console.log(`Discord.js Captcha Error: User's Direct Messages are Locked!\nYou can attempt have the CAPTCHA sent to a Text Channel if it can't send to DMs by using the "channelID" Option in the Constructor.\nNeed Help? Join our Discord Server at 'https://discord.gg/P2g24jp'`);
+                    return console.error(`[ERROR] libanabelle-captcha: User ${member.user.username} Direct Messages are Locked, ID: ${member.user.id}`);
                 }
             }
 
@@ -277,7 +277,7 @@ class Captcha extends EventEmitter {
                                     if (channel.type === ChannelType.GuildText) setTimeout(() => msg.delete(), 3000);
                                 });
                             } catch (e) {
-                                console.log ("[CAPTCHA] Error sending captcha timeout message to user "+ member.user.username +". User could have left before answering" + (captchaData.options.kickOnFailure) ? " or user kick failed." : ".");
+                                console.warn(`[WARNING] libanabelle-captcha: Failed to send captcha timeout message to user ${member.user.username}, ID: ${member.user.id}, user possibly left the server.`);
                             }
                             return false;
                         }
@@ -315,7 +315,7 @@ class Captcha extends EventEmitter {
                                     if (channel.type === ChannelType.GuildText) setTimeout(() => msg.delete(), 3000);
                                 });
                             } catch (e) {
-                                console.log ("[CAPTCHA] Error sending captcha success message to user " + member.user.username + ".");
+                                console.warn (`[WARNING] libanabelle-captcha: Failed to send captcha success message to user ${member.user.username}, ID: ${member.user.id}`);
                             }
                             return true;
                         } else { //If the answer is incorrect, this code will execute
@@ -359,7 +359,7 @@ class Captcha extends EventEmitter {
                                     if (channel.type === ChannelType.GuildText) setTimeout(() => msg.delete(), 3000);
                                 });
                             } catch (e) {
-                                console.log ("[CAPTCHA] Error sending captcha fail message to user " + member.user.username + (captchaData.options.kickOnFailure) ? " or user kick failed." : ".");
+                                console.warn (`[WARNING] libanabelle-captcha: Failed to send captcha fail message to user ${member.user.username}, ID: ${member.user.id}`);
                             }
                             return false;
                         }
